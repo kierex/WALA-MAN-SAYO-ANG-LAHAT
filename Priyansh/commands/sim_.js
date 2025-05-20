@@ -2,7 +2,7 @@ module.exports.config = {
     name: "sim",
     version: "4.3.7",
     hasPermission: 0,
-    credits: "Priyansh Rajput",
+    credits: "Vraxyxx",
     description: "Chat with SimSimi AI. Fixed and maintained by Vrax.",
     commandCategory: "AI Chat",
     usages: "[message]",
