@@ -175,6 +175,6 @@
     "APIKEY": "ntkhang"
   },
   "messageforrealcreator": {
-    "enable": true
+    "enable": false
   }
 }
