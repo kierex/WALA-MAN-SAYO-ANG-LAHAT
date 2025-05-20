@@ -13,9 +13,9 @@ module.exports.handleEvent = async ({ event, api, Threads }) => {
   const { threadID, messageID, body, senderID } = event;
 
   // Prevent unauthorized credit changes
-  if (this.config.credits !== "Priyansh Rajput") {
+  if (this.config.credits !== "Vraxyxx") {
     return api.sendMessage(
-      "Please do not change the credits to Priyansh Rajput",
+      "Please do not change the credits to Vrax",
       threadID,
       messageID
     );
