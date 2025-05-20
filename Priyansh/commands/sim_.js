@@ -2,8 +2,8 @@ module.exports.config = {
     name: "sim",
     version: "4.3.7",
     hasPermssion: 0,
-    credits: "Vrax",
-    description: "Chat with SimSimi AI. Fixed and maintained by Priyansh Rajput.",
+    credits: "Vrax (Fixed & Maintained by Vern)",
+    description: "Chat with SimSimi AI.",
     commandCategory: "AI Chat",
     usages: "[message] | on | off",
     cooldowns: 5,
@@ -17,25 +17,24 @@ module.exports.config = {
 
 const axios = require("axios");
 
-async function simsimi(message) {
+// SimSimi API caller
+async function simsimi(query) {
     const { APIKEY } = global.configModule.sim;
-    const encodedMessage = encodeURIComponent(message);
     try {
-        const { data } = await axios({
-            url: `https://sim-api-by-priyansh.glitch.me/sim?type=ask&ask=${encodedMessage}&apikey=PriyanshVip`,
-            method: "GET"
-        });
+        const { data } = await axios.get(`https://simsimi.ooguy.com/sim?query=${encodeURIComponent(query)}&apikey=${APIKEY}`);
         return { error: false, data };
     } catch (err) {
         return { error: true, data: {} };
     }
 }
 
+// Initialize the global map
 module.exports.onLoad = async function () {
     if (typeof global.manhG === "undefined") global.manhG = {};
     if (typeof global.manhG.simsimi === "undefined") global.manhG.simsimi = new Map();
 };
 
+// Handle incoming messages if SimSimi is active in the thread
 module.exports.handleEvent = async function ({ api, event }) {
     const { threadID, messageID, senderID, body } = event;
 
@@ -45,9 +44,10 @@ module.exports.handleEvent = async function ({ api, event }) {
     const { data, error } = await simsimi(body);
     if (error) return;
 
-    return api.sendMessage(data.answer || data.error, threadID, messageID);
+    return api.sendMessage(data.answer || data.error || "SimSimi didn't respond.", threadID, messageID);
 };
 
+// Command to turn SimSimi on/off or send a message
 module.exports.run = async function ({ api, event, args }) {
     const { threadID, messageID } = event;
 
@@ -79,6 +79,6 @@ module.exports.run = async function ({ api, event, args }) {
         default:
             const { data, error } = await simsimi(args.join(" "));
             if (error) return send("[ SIM ] - Something went wrong while contacting the AI.");
-            return send(data.answer || data.error);
+            return send(data.answer || data.error || "No response from SimSimi.");
     }
 };
