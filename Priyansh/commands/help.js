@@ -82,7 +82,7 @@ module.exports.run = function ({ api, event, args, getText }) {
 			msg += `「 ${++i + start} 」${prefix}${item}\n`;
 		}
 
-		const header = `📄 Command List\nMade by Priyansh Rajput 🥀\nFor more info, type: ${prefix}help [command name] ✨`;
+		const header = `📄 Command List\nMade by Vraxyxx 🥀\nFor more info, type: ${prefix}help [command name] ✨`;
 		const footer = `\nPage (${page}/${Math.ceil(arrayInfo.length / itemsPerPage)})`;
 
 		return api.sendMessage(`${header}\n\n${msg}${footer}`, threadID, async (error, info) => {
