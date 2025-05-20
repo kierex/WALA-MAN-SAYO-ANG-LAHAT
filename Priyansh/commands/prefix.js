@@ -2,7 +2,7 @@ module.exports.config = {
   name: "prefix",
   version: "1.0.0",
   hasPermission: 0,
-  credits: "Vrax",
+  credits: "Priyansh Rajput",
   description: "Provides details about the current prefix",
   commandCategory: "Admin",
   usages: "",
