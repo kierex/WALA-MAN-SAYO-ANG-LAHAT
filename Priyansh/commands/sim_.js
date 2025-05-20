@@ -1,11 +1,11 @@
 module.exports.config = {
     name: "sim",
     version: "4.3.7",
-    hasPermssion: 0,
-    credits: "Vrax (Fixed & Maintained by Vern)",
-    description: "Chat with SimSimi AI.",
+    hasPermission: 0,
+    credits: "Priyansh Rajput",
+    description: "Chat with SimSimi AI. Fixed and maintained by Vrax.",
     commandCategory: "AI Chat",
-    usages: "[message] | on | off",
+    usages: "[message]",
     cooldowns: 5,
     dependencies: {
         axios: ""
@@ -13,50 +13,52 @@ module.exports.config = {
     envConfig: {
         APIKEY: "Priyansh_1234567890"
     }
-};
+}
 
 const axios = require("axios");
 
-// SimSimi API caller
-async function simsimi(query) {
+async function simsimi(message) {
     const { APIKEY } = global.configModule.sim;
+    const encodedMessage = encodeURIComponent(message);
     try {
-        const { data } = await axios.get(`https://simsimi.ooguy.com/sim?query=${encodeURIComponent(query)}&apikey=${APIKEY}`);
+        // Using a custom SimSimi API endpoint with a fixed API key
+        const { data } = await axios.get(`https://sim-api-by-priyansh.glitch.me/sim?type=ask&ask=${encodedMessage}&apikey=PriyanshVip`);
         return { error: false, data };
-    } catch (err) {
+    } catch (error) {
         return { error: true, data: {} };
     }
 }
 
-// Initialize the global map
-module.exports.onLoad = async function () {
+module.exports.onLoad = async function() {
     if (typeof global.manhG === "undefined") global.manhG = {};
     if (typeof global.manhG.simsimi === "undefined") global.manhG.simsimi = new Map();
 };
 
-// Handle incoming messages if SimSimi is active in the thread
-module.exports.handleEvent = async function ({ api, event }) {
+module.exports.handleEvent = async function({ api, event }) {
     const { threadID, messageID, senderID, body } = event;
 
-    if (!global.manhG.simsimi.has(threadID)) return;
-    if (senderID === api.getCurrentUserID() || !body || messageID === global.manhG.simsimi.get(threadID)) return;
+    // If SimSimi is active in this thread
+    if (global.manhG.simsimi.has(threadID)) {
+        // Ignore messages from the bot itself, empty messages, or duplicate messages
+        if (senderID === api.getCurrentUserID() || !body || messageID === global.manhG.simsimi.get(threadID)) return;
 
-    const { data, error } = await simsimi(body);
-    if (error) return;
+        const { data, error } = await simsimi(body);
+        if (error) return;
 
-    return api.sendMessage(data.answer || data.error || "SimSimi didn't respond.", threadID, messageID);
-};
+        // Send the AI's response or an error message
+        return api.sendMessage(data.answer || data.error, threadID, messageID);
+    }
+}
 
-// Command to turn SimSimi on/off or send a message
-module.exports.run = async function ({ api, event, args }) {
+module.exports.run = async function({ api, event, args }) {
     const { threadID, messageID } = event;
 
-    function send(msg) {
-        return api.sendMessage(msg, threadID, messageID);
+    function sendMessage(text) {
+        return api.sendMessage(text, threadID, messageID);
     }
 
     if (args.length === 0) {
-        return send("[ SIM ] - You haven't entered a message yet.");
+        return sendMessage("[ SIM ] - You haven't entered a message yet.");
     }
 
     const command = args[0].toLowerCase();
@@ -64,21 +66,21 @@ module.exports.run = async function ({ api, event, args }) {
     switch (command) {
         case "on":
             if (global.manhG.simsimi.has(threadID)) {
-                return send("[ SIM ] - SimSimi is already active in this thread.");
+                return sendMessage("[ SIM ] - SimSimi is already enabled in this thread.");
             }
             global.manhG.simsimi.set(threadID, messageID);
-            return send("[ SIM ] - SimSimi has been enabled for this thread.");
+            return sendMessage("[ SIM ] - SimSimi has been enabled.");
 
         case "off":
             if (!global.manhG.simsimi.has(threadID)) {
-                return send("[ SIM ] - SimSimi is not currently active in this thread.");
+                return sendMessage("[ SIM ] - SimSimi is not active in this thread.");
             }
             global.manhG.simsimi.delete(threadID);
-            return send("[ SIM ] - SimSimi has been disabled for this thread.");
+            return sendMessage("[ SIM ] - SimSimi has been disabled.");
 
         default:
             const { data, error } = await simsimi(args.join(" "));
-            if (error) return send("[ SIM ] - Something went wrong while contacting the AI.");
-            return send(data.answer || data.error || "No response from SimSimi.");
+            if (error) return sendMessage("[ SIM ] - Something went wrong while contacting the AI.");
+            return sendMessage(data.answer || data.error);
     }
 };
