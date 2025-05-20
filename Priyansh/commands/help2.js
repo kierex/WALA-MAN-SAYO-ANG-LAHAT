@@ -85,7 +85,7 @@ module.exports.run = function ({ api, event, args, getText }) {
             msg += `「 ${++i} 」${prefix}${cmd}\n`;
         }
 
-        const header = `Command List 📄\nCreated by Priyansh Rajput 🥀\nType "${prefix}help [command name]" for more info ✨`;
+        const header = `Command List 📄\nCreated by Vraxyxx 🥀\nType "${prefix}help [command name]" for more info ✨`;
         const footer = `\nPage (${page}/${Math.ceil(allCommands.length / itemsPerPage)})`;
 
         return api.sendMessage(header + "\n\n" + msg + footer, threadID, async (error, info) => {
