@@ -46,7 +46,7 @@ module.exports.handleEvent = async function({ api, event }) {
         if (error) return;
 
         // Send the AI's response or an error message
-        return api.sendMessage(data.answer || data.error, threadID, messageID);
+        return api.sendMessage(data.answer || "Sorry, I couldn't understand that.", threadID, messageID);
     }
 }
 
@@ -58,7 +58,7 @@ module.exports.run = async function({ api, event, args }) {
     }
 
     if (args.length === 0) {
-        return sendMessage("[ SIM ] - You haven't entered a message yet.");
+        return sendMessage("[SIM] - Please enter a message.");
     }
 
     const command = args[0].toLowerCase();
@@ -66,21 +66,21 @@ module.exports.run = async function({ api, event, args }) {
     switch (command) {
         case "on":
             if (global.manhG.simsimi.has(threadID)) {
-                return sendMessage("[ SIM ] - SimSimi is already enabled in this thread.");
+                return sendMessage("[SIM] - SimSimi is already enabled in this chat.");
             }
             global.manhG.simsimi.set(threadID, messageID);
-            return sendMessage("[ SIM ] - SimSimi has been enabled.");
+            return sendMessage("[SIM] - SimSimi has been enabled.");
 
         case "off":
             if (!global.manhG.simsimi.has(threadID)) {
-                return sendMessage("[ SIM ] - SimSimi is not active in this thread.");
+                return sendMessage("[SIM] - SimSimi is not enabled in this chat.");
             }
             global.manhG.simsimi.delete(threadID);
-            return sendMessage("[ SIM ] - SimSimi has been disabled.");
+            return sendMessage("[SIM] - SimSimi has been disabled.");
 
         default:
             const { data, error } = await simsimi(args.join(" "));
-            if (error) return sendMessage("[ SIM ] - Something went wrong while contacting the AI.");
-            return sendMessage(data.answer || data.error);
+            if (error) return sendMessage("[SIM] - An error occurred while contacting the AI.");
+            return sendMessage(data.answer || "Sorry, I couldn't find a response.");
     }
 };
