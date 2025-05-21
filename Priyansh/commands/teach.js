@@ -2,8 +2,8 @@ module.exports.config = {
     name: "teach",
     version: "1.0.0",
     hasPermssion: 0,
-    credits: "Priyansh Rajput",
-    description: "Sim learning by teaching",
+    credits: "𝐏𝐫𝐢𝐲𝐚𝐧𝐬𝐡 𝐑𝐚𝐣𝐩𝐮𝐭",
+    description: "sim learning by teach",
     commandCategory: "Sim",
     usages: "",
     cooldowns: 2,
@@ -14,7 +14,7 @@ module.exports.config = {
 var API_KEY = "";
 module.exports.run = ({ api, event, args }) => {
     const { threadID, messageID, senderID } = event;
-    return api.sendMessage("[SIM] - Please reply to this message with a question for Simmi.", threadID, (err, info) => {
+    return api.sendMessage("[ 𝐒𝐈𝐌 ] - Reply to this message Enter a question for Simmi", threadID, (err, info) => {
         global.client.handleReply.push({
             step: 1,
             name: this.config.name,
@@ -52,7 +52,7 @@ module.exports.handleReply = async({ api, event, Users, handleReply }) => {
     switch (handleReply.step) {
         case 1:
             content.ask = input;
-            sendC("[SIM] - Now reply to this message with the answer.", 2, content);
+            sendC("[ 𝐒𝐈𝐌 ] - Reply to this message", 2, content);
             break;
 
         case 2:
@@ -61,10 +61,10 @@ module.exports.handleReply = async({ api, event, Users, handleReply }) => {
             api.unsendMessage(handleReply.messageID);
             let c = content;
             let res = await axios.get(encodeURI(`https://sim-api-by-priyansh.glitch.me/sim?type=teach&ask=${c.ask}&ans=${c.ans}&apikey=PriyanshVip`));
-            if (res.data.error) return send(`Error: ${res.data.error}`);
-            send(`[SIM] - Teaching successful! Preview:\n\nQuestion:\n${c.ask}\nAnswer:\n${c.ans}\n\nTime recorded: ${timeZ}`);
+            if (res.data.error) return send(`${res.data.error}`);
+            send(`[ 𝐒𝐈𝐌 ] - It's a success, previews:\n\n🤤 Data:\n${c.ask} -> ${c.ans}\n\n⏱ Time: ${timeZ}`);
             break;
         default:
             break;
     }
-}
+  }
